@@ -1,0 +1,53 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "aos.evlog.v1",
+  "title": "AOS Event Log Schema",
+  "description": "Structured, append-only event log for agent observability. Human-readable first, machine-parseable second.",
+  "type": "object",
+  "required": ["timestamp", "job_id", "agent_role", "repo", "branch", "action_type", "description", "result"],
+  "properties": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp (e.g., 2026-01-31T15:30:00Z)"
+    },
+    "job_id": {
+      "type": "string",
+      "description": "Unique identifier for the job or task being executed (e.g., AOS__PHASE1_OBSERVABILITY)"
+    },
+    "agent_role": {
+      "type": "string",
+      "enum": ["builder", "reviewer", "pm", "qa", "ops", "human"],
+      "description": "The role of the agent emitting this event"
+    },
+    "repo": {
+      "type": "string",
+      "description": "Repository name where the action occurred"
+    },
+    "branch": {
+      "type": "string",
+      "description": "Git branch where the action occurred"
+    },
+    "action_type": {
+      "type": "string",
+      "enum": ["command", "file_change", "decision", "report"],
+      "description": "Category of action being logged"
+    },
+    "description": {
+      "type": "string",
+      "description": "Human-readable description of what happened"
+    },
+    "artifacts": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": [],
+      "description": "Paths to files created or modified (relative to repo root)"
+    },
+    "result": {
+      "type": "string",
+      "enum": ["success", "failure", "aborted"],
+      "description": "Outcome of the action"
+    }
+  },
+  "additionalProperties": false
+}
