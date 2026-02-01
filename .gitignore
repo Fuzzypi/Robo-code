@@ -1,2 +1,5 @@
 # AOS runtime state (never committed)
 .aos/state/
+
+# AOS generated reports (runtime artifacts)
+.aos/reports/*.md
