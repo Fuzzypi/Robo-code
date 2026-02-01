@@ -22,6 +22,7 @@ AOS_DIR="$(dirname "$SCRIPT_DIR")"
 JOB_START="${AOS_DIR}/job/job.start.sh"
 JOB_END="${AOS_DIR}/job/job.end.sh"
 RUN_SH="${SCRIPT_DIR}/run.sh"
+GUARD_SH="${AOS_DIR}/guard/aos.guard.sh"
 
 # Parse arguments - extract job_id, optional agent_role, then command after "--"
 JOB_ID=""
@@ -57,6 +58,11 @@ if [ ${#COMMAND_ARGS[@]} -eq 0 ]; then
     echo "Error: No command specified after '--'"
     echo "Usage: ./run.job.sh <job_id> [agent_role] -- <command...>"
     exit 1
+fi
+
+# Run guard checks (soft enforcement - warnings only, never blocks)
+if [ -x "$GUARD_SH" ]; then
+    "$GUARD_SH" 2>/dev/null || true
 fi
 
 # Start job (best-effort - don't fail if this fails)

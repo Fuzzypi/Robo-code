@@ -52,7 +52,8 @@
         "decision",
         "report",
         "job_start",
-        "job_end"
+        "job_end",
+        "guard_check"
       ],
       "description": "Category of action being logged"
     },
@@ -73,7 +74,10 @@
       "enum": [
         "success",
         "failure",
-        "aborted"
+        "aborted",
+        "started",
+        "warnings",
+        "clean"
       ],
       "description": "Outcome of the action"
     },

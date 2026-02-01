@@ -21,6 +21,7 @@
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 AOS_DIR="$(dirname "$SCRIPT_DIR")"
 EVLOG_SCRIPT="${AOS_DIR}/logs/evlog.append.sh"
+GUARD_SH="${AOS_DIR}/guard/aos.guard.sh"
 
 # Parse arguments - find the "--" separator
 COMMAND_ARGS=()
@@ -71,6 +72,12 @@ if [ ${#COMMAND_ARGS[@]} -eq 0 ]; then
     echo "Usage: ./run.sh -- <command...>"
     echo "Example: ./run.sh -- ls -la"
     exit 1
+fi
+
+
+# Run guard checks (soft enforcement - warnings only, never blocks)
+if [ -x "$GUARD_SH" ]; then
+    "$GUARD_SH" 2>/dev/null || true
 fi
 
 # Emit "started" log entry (best-effort)
