@@ -54,7 +54,7 @@ Each event contains:
 | `agent_role` | enum | `builder`, `reviewer`, `pm`, `qa`, `ops`, `human` |
 | `repo` | string | Repository name |
 | `branch` | string | Git branch |
-| `action_type` | enum | `command`, `file_change`, `decision`, `report` |
+| `action_type` | enum | `command`, `file_change`, `decision`, `report`, `job_start`, `job_end` |
 | `description` | string | Human-readable summary |
 | `artifacts` | array | Paths to created/modified files |
 | `result` | enum | `success`, `failure`, `aborted` |
@@ -63,7 +63,7 @@ Each event contains:
 
 ## How Agents Emit Logs
 
-### Using the Shell Script
+### Using the Shell Script (Explicit Parameters)
 
 ```bash
 ./evlog.append.sh \
@@ -77,8 +77,21 @@ Each event contains:
   [artifact1] [artifact2] ...
 ```
 
-### Example
+### Using Auto-Fill from Job Context
 
+When a job is bound via `.aos/job/job.start.sh`, you can use `-` to auto-fill context:
+
+```bash
+./evlog.append.sh - - - - "action_type" "description" "result" [artifacts...]
+```
+
+The script will read `job_id`, `agent_role`, `repo`, and `branch` from `.aos/state/current_job.json`.
+
+If no job is bound, it gracefully falls back to `job_id: "UNKNOWN"`.
+
+### Examples
+
+**Explicit (all parameters):**
 ```bash
 ./evlog.append.sh \
   "AOS__PHASE1_OBSERVABILITY" \
@@ -92,6 +105,11 @@ Each event contains:
   ".aos/logs/evlog.append.sh"
 ```
 
+**Auto-context (with job bound):**
+```bash
+./evlog.append.sh - - - - "file_change" "Modified config" "success" "config.json"
+```
+
 ### Programmatic Emission (Future)
 
 Agents using other languages can append directly to `evlog.ndjson`:
@@ -100,6 +118,32 @@ Agents using other languages can append directly to `evlog.ndjson`:
 2. Serialize to a single line (no pretty-printing)
 3. Append to the file with a newline
 4. Handle write failures silently
+
+---
+
+## Job Binding Integration
+
+As of Phase 3, evlog integrates with job binding (see `.aos/job/README.md`).
+
+### Automatic Job Events
+
+When using job scripts:
+
+- `job.start.sh` emits `action_type: "job_start"`
+- `job.end.sh` emits `action_type: "job_end"`
+
+### Workflow Example
+
+```bash
+# Start job (emits job_start)
+./.aos/job/job.start.sh AOS__PHASE3_JOB_BINDING builder
+
+# Work with auto-context
+./.aos/logs/evlog.append.sh - - - - "file_change" "did x" "success"
+
+# End job (emits job_end)
+./.aos/job/job.end.sh success
+```
 
 ---
 
@@ -129,6 +173,12 @@ cat .aos/logs/evlog.ndjson | jq 'select(.job_id == "AOS__PHASE1_OBSERVABILITY")'
 cat .aos/logs/evlog.ndjson | jq 'select(.agent_role == "builder")'
 ```
 
+### View Job Timeline
+
+```bash
+cat .aos/logs/evlog.ndjson | jq 'select(.action_type == "job_start" or .action_type == "job_end")'
+```
+
 ### Count Events by Type
 
 ```bash
@@ -153,19 +203,20 @@ This file:
 
 ---
 
-## Phase 1 Scope
+## Graceful Degradation
 
-This is **Phase 1 observability only**. It provides:
+Evlog is designed to never block execution:
 
-- ✅ Structured event schema
-- ✅ Append-only log writer
-- ✅ Documentation
+| Condition | Behavior |
+|-----------|----------|
+| Job state missing | Uses `job_id: "UNKNOWN"` |
+| Write fails | Silently continues |
+| Invalid parameters | Uses defaults |
+| Directory missing | Attempts to create, fails silently |
 
-It does NOT provide:
+---
 
-- ❌ Enforcement gates
-- ❌ Required logging
-- ❌ Workflow hooks
-- ❌ Memory or coordination systems
+## Related Documentation
 
-Future phases may add tooling that reads evlog for analysis, but evlog itself remains passive.
+- `.aos/job/README.md` — Job binding and lifecycle management
+- `.aos/README.md` — AOS overview
