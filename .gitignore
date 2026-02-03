@@ -1,5 +1,22 @@
 # AOS runtime state (never committed)
 .aos/state/
+.aos-events/
+.aos-artifacts/
 
 # AOS generated reports (runtime artifacts)
 .aos/reports/*.md
+
+# Node.js
+dist/
+node_modules/
+*.log
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Test artifacts
+coverage/
