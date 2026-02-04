@@ -1,0 +1,16 @@
+commit d9f6f51caa020dfb2fdbf25a547b989aadc053aa
+Author: Fuzzypi <slip360@gmail.com>
+Date:   Wed Feb 4 12:39:08 2026 -0500
+
+    Phase 5: Hardening, validation, and demo readiness
+
+ crm-web/PHASE_5_VERIFICATION.md      | 250 +++++++++++++++++++++++++++++++++++
+ crm-web/RELEASE_NOTES.md             | 131 ++++++++++++++++++
+ crm-web/SMOKE_TEST.md                | 159 ++++++++++++++++++++++
+ crm-web/server/crm-export-server.cjs |  19 ++-
+ crm-web/src/App.jsx                  |  75 ++++++-----
+ crm-web/src/CustomerDetailPage.jsx   |   2 +
+ crm-web/src/CustomersPage.jsx        |  11 +-
+ crm-web/src/ErrorBoundary.jsx        |  42 ++++++
+ crm-web/src/ExportPage.jsx           |   4 +-
+ 9 files changed, 648 insertions(+), 45 deletions(-)

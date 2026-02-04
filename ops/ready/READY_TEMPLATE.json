@@ -1,0 +1,9 @@
+{
+  "job_name": "<JOB>",
+  "goal": "<Describe the goal of the job>",
+  "pass_criteria": "<Criteria for considering the job successful>",
+  "allowlisted_commands": ["<Add allowable commands here>"],
+  "repo_paths": ["<Authorized repository paths>"],
+  "network": "OFF",  
+  "expected_outputs": "<Describe expected outputs>"
+}

@@ -1,0 +1,2 @@
+{"job_name": "Shogun-lite Verify Gate", "goal": "Runs the project's primary verification gate.", "pass_criteria": ["Verification commands run to completion", "Exit code 0", "Transcript clearly shows which verify commands ran"], "fail_criteria": ["Any verify command fails (nonzero)", "Missing artifacts"], "repo_roots": ["."], "network": "OFF", "allowlisted_command_families": [], "expected_artifacts": ["transcript.log", "meta.json", "git_status.txt", "git_diff_stat.txt", "git_log_1_stat.txt", "ops/.aos_state/shogun_last_verify_pass"], "stop_conditions": []}
+

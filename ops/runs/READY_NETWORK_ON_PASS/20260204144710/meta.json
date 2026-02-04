@@ -1,0 +1,17 @@
+{
+  "job_name": "NETWORK_ON_PASS",
+  "goal": "Demonstrate successful network usage with network policy ON",
+  "pass_criteria": "Job executes with network access and performs health check",
+  "allowlisted_commands": [
+    "echo",
+    "curl"
+  ],
+  "repo_paths": [
+    "/Users/fuzzypi/Robo-code"
+  ],
+  "network": "ON",
+  "expected_outputs": "Health check result in transcript.log",
+  "start_time": "2026-02-04T14:47:10",
+  "end_time": "2026-02-04T14:47:10",
+  "exit_code": 1
+}

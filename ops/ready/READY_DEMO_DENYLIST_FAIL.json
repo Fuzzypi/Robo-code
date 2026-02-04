@@ -1,0 +1,9 @@
+{
+  "job_name": "DEMO_DENYLIST_FAIL",
+  "goal": "Demonstrate denylist enforcement by attempting to use sudo",
+  "pass_criteria": "Should be blocked before execution with AOS_READY_DENYLIST_BLOCK error",
+  "allowlisted_commands": ["echo", "sudo"],
+  "repo_paths": ["/Users/fuzzypi/Robo-code"],
+  "network": "OFF",
+  "expected_outputs": "Denylist block message before job execution"
+}

@@ -1,0 +1,9 @@
+{
+  "job_name": "NETWORK_OFF_FAIL",
+  "goal": "Demonstrate network policy enforcement when network is OFF",
+  "pass_criteria": "Should be blocked before execution with AOS_READY_NETWORK_BLOCK error",
+  "allowlisted_commands": ["echo", "curl"],
+  "repo_paths": ["/Users/fuzzypi/Robo-code"],
+  "network": "OFF",
+  "expected_outputs": "Network policy block message before job execution"
+}

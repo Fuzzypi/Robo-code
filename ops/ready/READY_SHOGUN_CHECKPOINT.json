@@ -1,0 +1,25 @@
+{
+  "job_name": "Shogun-lite Checkpoint Commit",
+  "goal": "Creates a checkpoint commit if the repo is clean and Job 2 passed.",
+  "pass_criteria": [
+    "One new commit created with message: 'AOS CHECKPOINT: Shogun-lite verified'"
+  ],
+  "fail_criteria": [
+    "If repo dirty: job FAILS with a clear message (no commit)",
+    "If sentinel file does not exist or contains unexpected content"
+  ],
+  "repo_roots": ["."],
+  "network": "OFF",
+  "allowlisted_command_families": [],
+  "expected_artifacts": [
+    "transcript.log",
+    "meta.json",
+    "git_status_before.txt",
+    "git_status_after.txt",
+    "verify_sentinel.txt",
+    "git_diff_stat.txt",
+    "git_log_1_stat.txt"
+  ],
+  "stop_conditions": []
+}
+

@@ -1,0 +1,9 @@
+{
+  "job_name": "DEMO_PASS",
+  "goal": "Demonstrate a successful READY job execution with safe operations",
+  "pass_criteria": "Job exits with code 0 and performs safe file operations",
+  "allowlisted_commands": ["echo", "date", "pwd", "ls", "cat", "rm"],
+  "repo_paths": ["/Users/fuzzypi/Robo-code"],
+  "network": "OFF",
+  "expected_outputs": "Test file creation and cleanup messages in transcript.log"
+}

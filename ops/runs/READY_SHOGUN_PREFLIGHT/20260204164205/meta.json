@@ -1,0 +1,28 @@
+{
+  "job_name": "Shogun-lite Preflight Snapshot",
+  "goal": "Captures a reproducible snapshot of repo state and environment signals.",
+  "pass_criteria": [
+    "Production of run artifacts and transcript",
+    "Prints current branch, commit hash, clean/dirty state",
+    "No file modifications"
+  ],
+  "fail_criteria": [],
+  "repo_roots": [
+    "."
+  ],
+  "network": "OFF",
+  "allowlisted_command_families": [],
+  "expected_artifacts": [
+    "transcript.log",
+    "meta.json",
+    "git_status.txt",
+    "git_diff_stat.txt",
+    "git_log_1_stat.txt",
+    "branch.txt",
+    "commit_hash.txt"
+  ],
+  "stop_conditions": [],
+  "start_time": "2026-02-04T16:42:05",
+  "end_time": "2026-02-04T16:42:05",
+  "exit_code": 1
+}
