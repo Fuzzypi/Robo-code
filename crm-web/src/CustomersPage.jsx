@@ -1,14 +1,13 @@
 import { Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { loadStore, getCustomers } from './store/crmStore';
 
 export function CustomersPage() {
-  const [customers, setCustomers] = useState([]);
-
-  useEffect(() => {
+  const [customers] = useState(() => {
+    // Initialize state from store on first render
     const store = loadStore();
-    setCustomers(getCustomers(store));
-  }, []);
+    return getCustomers(store);
+  });
 
   return (
     <div style={{ padding: '2rem' }}>

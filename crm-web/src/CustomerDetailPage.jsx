@@ -50,6 +50,8 @@ export function CustomerDetailPage() {
 
   useEffect(() => {
     loadData();
+    // loadData depends on id but is defined inline, so we suppress the exhaustive-deps warning
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   const handleLogout = () => {

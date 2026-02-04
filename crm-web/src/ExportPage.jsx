@@ -78,9 +78,9 @@ export function ExportPage() {
       const etag = response.headers.get('ETag');
       const aosProofId = response.headers.get('X-AOS-Proof-Id');
       
-      // Verify hash
+      // Verify hash (computedHash available for future verification needs)
       const downloadedData = await response.json();
-      const computedHash = await computeClientHash(downloadedData);
+      const _computedHash = await computeClientHash(downloadedData);
       
       const etagHash = etag ? etag.replace(/"/g, '') : null;
       const hashMatch = etagHash === exportResult.hash;

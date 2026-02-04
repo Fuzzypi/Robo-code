@@ -87,14 +87,23 @@ function handleRequest(req, res) {
         const { customerIds, storeData } = payload;
         
         if (!customerIds || !Array.isArray(customerIds)) {
+          console.error('[ERROR] Invalid request: customerIds must be an array');
           res.writeHead(400, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify({ error: 'customerIds array required' }));
           return;
         }
         
-        if (!storeData) {
+        if (!storeData || typeof storeData !== 'object') {
+          console.error('[ERROR] Invalid request: storeData must be an object');
           res.writeHead(400, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ error: 'storeData required' }));
+          res.end(JSON.stringify({ error: 'storeData object required' }));
+          return;
+        }
+
+        if (!storeData.customers || !storeData.jobs || !storeData.notes) {
+          console.error('[ERROR] Invalid storeData: missing required fields');
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'storeData missing customers, jobs, or notes' }));
           return;
         }
         
@@ -108,6 +117,8 @@ function handleRequest(req, res) {
         
         // AOS fallback - since AOS is not required to be running
         const aosProofId = `FALLBACK_${generateUUID()}`;
+        
+        console.log(`[INFO] Export created: ${exportId}, hash: ${hash}`);
         
         // Store export
         exportStorage.set(exportId, {
@@ -126,6 +137,7 @@ function handleRequest(req, res) {
           aosProofId
         }));
       } catch (err) {
+        console.error('[ERROR] Export failed:', err.message);
         res.writeHead(500, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: err.message }));
       }
@@ -141,10 +153,13 @@ function handleRequest(req, res) {
       const exportRecord = exportStorage.get(exportId);
       
       if (!exportRecord) {
+        console.error(`[ERROR] Export not found: ${exportId}`);
         res.writeHead(404, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: 'Export not found' }));
         return;
       }
+      
+      console.log(`[INFO] Download requested: ${exportId}`);
       
       res.writeHead(200, {
         'Content-Type': 'application/json',
