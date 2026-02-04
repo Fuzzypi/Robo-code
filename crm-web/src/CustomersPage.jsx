@@ -1,17 +1,20 @@
 import { Link } from 'react-router-dom';
-
-const CUSTOMERS = [
-  { id: 1, name: 'Acme Corp' },
-  { id: 2, name: 'Globex Inc' },
-  { id: 3, name: 'Initech Ltd' }
-];
+import { useState, useEffect } from 'react';
+import { loadStore, getCustomers } from './store/crmStore';
 
 export function CustomersPage() {
+  const [customers, setCustomers] = useState([]);
+
+  useEffect(() => {
+    const store = loadStore();
+    setCustomers(getCustomers(store));
+  }, []);
+
   return (
     <div style={{ padding: '2rem' }}>
       <h1>Customers</h1>
       <ul>
-        {CUSTOMERS.map(customer => (
+        {customers.map(customer => (
           <li key={customer.id}>
             <Link to={`/customers/${customer.id}`}>{customer.name}</Link>
           </li>
