@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { LoginPage } from './LoginPage';
 import { CustomersPage } from './CustomersPage';
 import { CustomerDetailPage } from './CustomerDetailPage';
+import { ExportPage } from './ExportPage';
 import { RequireAuth } from './RequireAuth';
 import { getToken } from './auth';
 import './App.css';
@@ -24,6 +25,14 @@ function App() {
           element={
             <RequireAuth>
               <CustomerDetailPage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/export"
+          element={
+            <RequireAuth>
+              <ExportPage />
             </RequireAuth>
           }
         />

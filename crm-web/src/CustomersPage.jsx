@@ -13,6 +13,11 @@ export function CustomersPage() {
   return (
     <div style={{ padding: '2rem' }}>
       <h1>Customers</h1>
+      <div style={{ marginBottom: '1rem' }}>
+        <Link to="/export">
+          <button>Export Data</button>
+        </Link>
+      </div>
       <ul>
         {customers.map(customer => (
           <li key={customer.id}>
