@@ -1,0 +1,30 @@
+{
+  "job_name": "AOS_FIX_ERROR_LOOP_CHECKPOINT",
+  "goal": "Ignore ops/runs artifacts and checkpoint current AOS changes to break the preflight dirty loop.",
+  "pass_criteria": [
+    "ops/runs/ is in .gitignore",
+    "ops/runs/ is not tracked by git",
+    "Checkpoint commit created",
+    "git status --porcelain is empty at end"
+  ],
+  "fail_criteria": [
+    "Unable to update .gitignore safely",
+    "Unable to untrack ops/runs if tracked",
+    "Commit fails",
+    "Repo remains dirty at end"
+  ],
+  "repo_roots": ["."],
+  "network": "OFF",
+  "allowlisted_command_families": ["git", "shell", "file"],
+  "expected_artifacts": [
+    "transcript.log",
+    "meta.json",
+    "git_status.txt",
+    "git_diff_stat.txt",
+    "git_log_1_stat.txt",
+    "final_status.txt"
+  ],
+  "stop_conditions": [
+    "If repo remains dirty after commit, FAIL with git status in transcript"
+  ]
+}
