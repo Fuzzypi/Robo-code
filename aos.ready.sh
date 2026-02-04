@@ -18,6 +18,9 @@ RUN_DIR="ops/runs/$(basename $JOB_SCRIPT .sh)/$(date +%Y%m%d%H%M%S)"
 # Create run directory early for logging
 mkdir -p "$RUN_DIR"
 
+# Export AOS_RUN_DIR for job scripts to use
+export AOS_RUN_DIR="$RUN_DIR"
+
 # Validate existence of script and JSON metadata
 if [[ ! -f "$JOB_SCRIPT" ]] || [[ ! -f "$JOB_JSON" ]]; then
   echo "AOS_READY_METADATA_MISSING: Required job script or metadata missing."
