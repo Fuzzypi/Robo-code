@@ -206,3 +206,44 @@ Verify error strings are greppable:
 bash aos.ready.sh ops/ready/READY_DEMO_DENYLIST_FAIL.sh 2>&1 | grep -q "AOS_READY_DENYLIST_BLOCK" && echo "✓ Denylist block detected"
 bash aos.ready.sh ops/ready/READY_NETWORK_OFF_FAIL.sh 2>&1 | grep -q "AOS_READY_NETWORK_BLOCK" && echo "✓ Network block detected"
 ```
+
+---
+
+## Artifact Guarantees (Updated)
+
+**Always created** (even on early validation failures):
+- `ops/runs/<JOB>/<timestamp>/transcript.log` - Complete execution log including validation errors
+- `ops/runs/<JOB>/<timestamp>/meta.json` - Job metadata with timing (created after execution)
+- `ops/runs/<JOB>/<timestamp>/git_status.txt` - Git status snapshot
+- `ops/runs/<JOB>/<timestamp>/git_diff_stat.txt` - Git diff statistics  
+- `ops/runs/<JOB>/<timestamp>/git_log_1_stat.txt` - Latest commit info
+
+**Critical:** `transcript.log` is created **immediately** after run directory creation, ensuring all validation messages (including `AOS_READY_METADATA_MISSING`, `AOS_READY_DENYLIST_BLOCK`, `AOS_READY_NETWORK_BLOCK`) are captured even if early validation fails.
+
+## Environment Variables
+
+The runner exports:
+- `AOS_RUN_DIR`: Full path to the run artifact directory (e.g., `ops/runs/READY_DEMO_PASS/20260204171128`)
+
+Job scripts can use `$AOS_RUN_DIR` to write additional artifacts or read from `transcript.log`.
+
+## Dependencies
+
+**Required:** bash, git, grep, sed (standard on macOS/Linux)
+
+**Optional:** jq (for enhanced metadata merging; runner falls back to simple JSON generation if `jq` not available)
+
+## Repository Root Detection
+
+The runner reads `repo_roots` from the JSON metadata:
+- If `"repo_roots": ["."]` or missing, defaults to current directory  
+- Git snapshots are taken from the specified repo root
+
+Example metadata:
+```json
+{
+  "job_name": "MY_JOB",
+  "repo_roots": ["."],
+  "network": "OFF"
+}
+```
