@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { loadStore } from './store/crmStore';
 
 const API_BASE = 'http://localhost:3001';
 
 export function ExportPage() {
+  const navigate = useNavigate();
   const [customers, setCustomers] = useState([]);
   const [selectedIds, setSelectedIds] = useState([]);
   const [exportResult, setExportResult] = useState(null);
@@ -119,26 +121,47 @@ export function ExportPage() {
   };
 
   return (
-    <div style={{ padding: '2rem', maxWidth: '800px' }}>
-      <h1>Export CRM Data</h1>
+    <div style={{ padding: '2rem', maxWidth: '900px', margin: '0 auto' }}>
+      <div style={{ marginBottom: '2rem' }}>
+        <button 
+          onClick={() => navigate('/customers')}
+          style={{ padding: '0.5rem 1rem', marginBottom: '1rem', backgroundColor: '#6c757d', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+        >
+          ← Back to Customers
+        </button>
+        <h1>Export CRM Data</h1>
+      </div>
 
       {/* Customer Selection */}
-      <div style={{ marginBottom: '2rem', border: '1px solid #ccc', padding: '1rem' }}>
-        <h2>Select Customers</h2>
+      <div style={{ marginBottom: '2rem', border: '1px solid #dee2e6', borderRadius: '8px', padding: '1.5rem', backgroundColor: '#f8f9fa' }}>
+        <h2 style={{ marginTop: 0 }}>Select Customers to Export</h2>
         {customers.length === 0 ? (
-          <p>No customers available</p>
+          <p style={{ color: '#666', fontStyle: 'italic' }}>No customers available</p>
         ) : (
-          <div>
+          <div style={{ backgroundColor: 'white', padding: '1rem', borderRadius: '4px', maxHeight: '300px', overflowY: 'auto' }}>
+            <div style={{ marginBottom: '1rem' }}>
+              <button
+                onClick={() => setSelectedIds(selectedIds.length === customers.length ? [] : customers.map(c => c.id))}
+                style={{ padding: '0.25rem 0.75rem', fontSize: '0.9rem', backgroundColor: '#e9ecef', border: '1px solid #ced4da', borderRadius: '4px', cursor: 'pointer' }}
+              >
+                {selectedIds.length === customers.length ? 'Deselect All' : 'Select All'}
+              </button>
+              <span style={{ marginLeft: '1rem', color: '#666', fontSize: '0.9rem' }}>
+                ({selectedIds.length} of {customers.length} selected)
+              </span>
+            </div>
             {customers.map(customer => (
-              <div key={customer.id} style={{ marginBottom: '0.5rem' }}>
-                <label>
+              <div key={customer.id} style={{ marginBottom: '0.5rem', padding: '0.5rem', borderRadius: '4px', backgroundColor: selectedIds.includes(customer.id) ? '#e7f3ff' : 'transparent' }}>
+                <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
                   <input
                     type="checkbox"
                     checked={selectedIds.includes(customer.id)}
                     onChange={() => handleToggleCustomer(customer.id)}
+                    style={{ marginRight: '0.75rem', width: '18px', height: '18px', cursor: 'pointer' }}
                   />
-                  {' '}
-                  {customer.name}
+                  <span style={{ fontWeight: selectedIds.includes(customer.id) ? '500' : 'normal' }}>
+                    {customer.name}
+                  </span>
                 </label>
               </div>
             ))}
@@ -147,9 +170,20 @@ export function ExportPage() {
         <button
           onClick={handleCreateExport}
           disabled={loading || selectedIds.length === 0}
-          style={{ marginTop: '1rem', padding: '0.5rem 1rem' }}
+          style={{ 
+            marginTop: '1rem', 
+            padding: '0.75rem 1.5rem', 
+            fontSize: '1rem',
+            backgroundColor: selectedIds.length === 0 ? '#6c757d' : '#28a745',
+            color: 'white', 
+            border: 'none', 
+            borderRadius: '4px', 
+            cursor: selectedIds.length === 0 ? 'not-allowed' : 'pointer',
+            opacity: loading ? 0.6 : 1,
+            fontWeight: '500'
+          }}
         >
-          {loading ? 'Creating Export...' : 'Create Export'}
+          {loading ? '⏳ Creating Export...' : '📤 Create Export'}
         </button>
       </div>
 
@@ -158,60 +192,71 @@ export function ExportPage() {
         <div style={{ 
           marginBottom: '2rem', 
           padding: '1rem', 
-          backgroundColor: '#fee', 
-          border: '1px solid #c00',
-          color: '#c00'
+          backgroundColor: '#f8d7da', 
+          border: '1px solid #f5c6cb',
+          borderRadius: '4px',
+          color: '#721c24'
         }}>
-          <strong>Error:</strong> {error}
+          <strong>❌ Error:</strong> {error}
         </div>
       )}
 
       {/* Export Result */}
       {exportResult && (
-        <div style={{ marginBottom: '2rem', border: '1px solid #ccc', padding: '1rem' }}>
-          <h2>Export Proof</h2>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <tbody>
-              <tr>
-                <td style={{ padding: '0.5rem', fontWeight: 'bold', borderBottom: '1px solid #ccc' }}>
-                  Export ID
-                </td>
-                <td style={{ padding: '0.5rem', borderBottom: '1px solid #ccc', fontFamily: 'monospace' }}>
-                  {exportResult.exportId}
-                </td>
-              </tr>
-              <tr>
-                <td style={{ padding: '0.5rem', fontWeight: 'bold', borderBottom: '1px solid #ccc' }}>
-                  Hash
-                </td>
-                <td style={{ padding: '0.5rem', borderBottom: '1px solid #ccc', fontFamily: 'monospace', wordBreak: 'break-all' }}>
-                  {exportResult.hash}
-                </td>
-              </tr>
-              <tr>
-                <td style={{ padding: '0.5rem', fontWeight: 'bold', borderBottom: '1px solid #ccc' }}>
-                  Timestamp
-                </td>
-                <td style={{ padding: '0.5rem', borderBottom: '1px solid #ccc' }}>
-                  {new Date(exportResult.timestamp).toLocaleString()}
-                </td>
-              </tr>
-              <tr>
-                <td style={{ padding: '0.5rem', fontWeight: 'bold' }}>
-                  AOS Proof ID
-                </td>
-                <td style={{ padding: '0.5rem', fontFamily: 'monospace' }}>
-                  {exportResult.aosProofId}
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        <div style={{ marginBottom: '2rem', border: '1px solid #28a745', borderRadius: '8px', padding: '1.5rem', backgroundColor: '#d4edda' }}>
+          <h2 style={{ marginTop: 0, color: '#155724' }}>✅ Export Created Successfully</h2>
+          <div style={{ backgroundColor: 'white', padding: '1rem', borderRadius: '4px' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <tbody>
+                <tr>
+                  <td style={{ padding: '0.75rem', fontWeight: '600', borderBottom: '1px solid #dee2e6', width: '30%' }}>
+                    Export ID
+                  </td>
+                  <td style={{ padding: '0.75rem', borderBottom: '1px solid #dee2e6', fontFamily: 'monospace', fontSize: '0.9rem' }}>
+                    {exportResult.exportId}
+                  </td>
+                </tr>
+                <tr>
+                  <td style={{ padding: '0.75rem', fontWeight: '600', borderBottom: '1px solid #dee2e6' }}>
+                    Hash (SHA-256)
+                  </td>
+                  <td style={{ padding: '0.75rem', borderBottom: '1px solid #dee2e6', fontFamily: 'monospace', wordBreak: 'break-all', fontSize: '0.85rem' }}>
+                    {exportResult.hash}
+                  </td>
+                </tr>
+                <tr>
+                  <td style={{ padding: '0.75rem', fontWeight: '600', borderBottom: '1px solid #dee2e6' }}>
+                    Timestamp
+                  </td>
+                  <td style={{ padding: '0.75rem', borderBottom: '1px solid #dee2e6' }}>
+                    {new Date(exportResult.timestamp).toLocaleString('en-US', {
+                      weekday: 'short',
+                      year: 'numeric',
+                      month: 'short',
+                      day: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      second: '2-digit'
+                    })}
+                  </td>
+                </tr>
+                <tr>
+                  <td style={{ padding: '0.75rem', fontWeight: '600' }}>
+                    AOS Proof ID
+                  </td>
+                  <td style={{ padding: '0.75rem', fontFamily: 'monospace', fontSize: '0.9rem' }}>
+                    {exportResult.aosProofId}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
           <button
             onClick={handleDownloadExport}
-            style={{ marginTop: '1rem', padding: '0.5rem 1rem' }}
+            style={{ marginTop: '1rem', padding: '0.75rem 1.5rem', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '1rem', fontWeight: '500' }}
           >
-            Download Export
+            💾 Download Export
           </button>
         </div>
       )}
@@ -220,36 +265,42 @@ export function ExportPage() {
       {verificationStatus && (
         <div style={{ 
           marginBottom: '2rem', 
-          padding: '1rem', 
-          border: '1px solid #ccc',
-          backgroundColor: verificationStatus.hashMatch ? '#efe' : '#fee'
+          padding: '1.5rem', 
+          border: `2px solid ${verificationStatus.hashMatch ? '#28a745' : '#dc3545'}`,
+          borderRadius: '8px',
+          backgroundColor: verificationStatus.hashMatch ? '#d4edda' : '#f8d7da'
         }}>
-          <h2>Hash Verification</h2>
-          <div style={{ marginBottom: '0.5rem' }}>
-            <strong>Status:</strong>{' '}
-            <span style={{ 
-              color: verificationStatus.hashMatch ? 'green' : 'red',
-              fontWeight: 'bold'
-            }}>
-              {verificationStatus.hashMatch ? '✓ MATCH' : '✗ MISMATCH'}
-            </span>
-          </div>
-          <div style={{ marginBottom: '0.5rem', fontSize: '0.9rem' }}>
-            <strong>Expected Hash:</strong>
-            <div style={{ fontFamily: 'monospace', wordBreak: 'break-all' }}>
-              {verificationStatus.expectedHash}
+          <h2 style={{ marginTop: 0, color: verificationStatus.hashMatch ? '#155724' : '#721c24' }}>
+            {verificationStatus.hashMatch ? '✅ Hash Verification: PASS' : '❌ Hash Verification: FAIL'}
+          </h2>
+          <div style={{ backgroundColor: 'white', padding: '1rem', borderRadius: '4px' }}>
+            <div style={{ marginBottom: '1rem', padding: '0.75rem', backgroundColor: verificationStatus.hashMatch ? '#d4edda' : '#f8d7da', borderRadius: '4px' }}>
+              <strong>Status:</strong>{' '}
+              <span style={{ 
+                color: verificationStatus.hashMatch ? '#155724' : '#721c24',
+                fontWeight: 'bold',
+                fontSize: '1.1rem'
+              }}>
+                {verificationStatus.hashMatch ? '✓ MATCH' : '✗ MISMATCH'}
+              </span>
             </div>
-          </div>
-          <div style={{ marginBottom: '0.5rem', fontSize: '0.9rem' }}>
-            <strong>Downloaded Hash (ETag):</strong>
-            <div style={{ fontFamily: 'monospace', wordBreak: 'break-all' }}>
-              {verificationStatus.etagHash}
+            <div style={{ marginBottom: '0.75rem', fontSize: '0.9rem', padding: '0.5rem', backgroundColor: '#f8f9fa', borderRadius: '4px' }}>
+              <strong>Expected Hash (from creation):</strong>
+              <div style={{ fontFamily: 'monospace', wordBreak: 'break-all', marginTop: '0.25rem', fontSize: '0.85rem' }}>
+                {verificationStatus.expectedHash}
+              </div>
             </div>
-          </div>
-          <div style={{ fontSize: '0.9rem' }}>
-            <strong>AOS Proof ID:</strong>
-            <div style={{ fontFamily: 'monospace' }}>
-              {verificationStatus.aosProofId}
+            <div style={{ marginBottom: '0.75rem', fontSize: '0.9rem', padding: '0.5rem', backgroundColor: '#f8f9fa', borderRadius: '4px' }}>
+              <strong>Downloaded Hash (ETag):</strong>
+              <div style={{ fontFamily: 'monospace', wordBreak: 'break-all', marginTop: '0.25rem', fontSize: '0.85rem' }}>
+                {verificationStatus.etagHash}
+              </div>
+            </div>
+            <div style={{ fontSize: '0.9rem', padding: '0.5rem', backgroundColor: '#e7f3ff', borderRadius: '4px' }}>
+              <strong>AOS Proof ID:</strong>
+              <div style={{ fontFamily: 'monospace', marginTop: '0.25rem' }}>
+                {verificationStatus.aosProofId}
+              </div>
             </div>
           </div>
         </div>
