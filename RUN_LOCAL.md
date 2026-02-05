@@ -489,6 +489,107 @@ npm run desktop:dev
 
 ---
 
+## Manual UI Test Checklist
+
+Use this checklist to verify the CRM is working correctly after launch:
+
+### Basic Functionality
+
+- [ ] **Login**: Click "Log in" button → redirects to Customers page
+- [ ] **Customer List**: See all 8 customers in table format
+- [ ] **Customer Detail**: Click customer name → detail page loads
+- [ ] **Back Navigation**: Click "← Back to Customers" → returns to list
+- [ ] **Logout**: Click "Logout" → returns to login page
+
+### Customer Detail Page
+
+- [ ] **Customer Info**: Name, email, phone displayed correctly
+- [ ] **Jobs List**: All jobs for customer shown with status badges
+- [ ] **Job Notes**: Notes under jobs displayed properly
+- [ ] **Customer Notes**: Notes section shows customer-level notes
+- [ ] **Add Job**: Fill form → click "Add Job" → new job appears
+- [ ] **Add Customer Note**: Write note → select "Customer" → click "Add Note" → appears in list
+- [ ] **Add Job Note**: Write note → select "Specific Job" → choose job → click "Add Note" → appears under job
+
+### Export Functionality
+
+- [ ] **Navigate to Export**: From customers page → click "📊 Export Data" button
+- [ ] **Select Customers**: Checkboxes work, "Select All" / "Deselect All" works
+- [ ] **Create Export**: Select customers → click "📤 Create Export" → success message
+- [ ] **Download Export**: Click "💾 Download Export" → file downloads
+- [ ] **Hash Verification**: Verification section shows "✅ MATCH" (green)
+- [ ] **Back to Customers**: Click "← Back to Customers" → returns to list
+
+### Data Persistence
+
+- [ ] **Refresh Test**: Add job/note → refresh page → data still present
+- [ ] **LocalStorage**: Data survives browser close/reopen
+
+### LAN Access (Requires Second Device)
+
+- [ ] **Network URL**: Access from phone/tablet using `http://192.168.x.x:3000`
+- [ ] **Login Works**: Can log in from network device
+- [ ] **Browse Customers**: Customer list loads on network device
+- [ ] **Export Works**: Can create and download export from network device
+
+### Visual/UX
+
+- [ ] **Layout**: No broken layouts, buttons aligned properly
+- [ ] **Colors**: Status badges colored correctly (green/yellow/blue/red)
+- [ ] **Forms**: All form inputs clearly labeled
+- [ ] **Tables**: Customer table readable with proper spacing
+- [ ] **No Console Errors**: Open browser DevTools → no red errors
+
+---
+
+## Known Limitations (Demo)
+
+### Data Management
+
+- **No Central Database**: Each browser has its own data (LocalStorage)
+- **No Sync**: Data on one device doesn't sync to others
+- **No Backup**: Clearing browser data deletes all CRM data
+- **No Import**: Can't import previously exported data back into CRM
+
+### Multi-User
+
+- **No Real Auth**: Login button is just a placeholder (no password)
+- **No User Accounts**: All users share the same data on same browser
+- **No Permissions**: No role-based access control
+
+### Data Size
+
+- **LocalStorage Limit**: Typically 5-10 MB per domain
+- **Large Datasets**: Performance may degrade with hundreds of customers
+
+### Network
+
+- **Same WiFi Required**: Devices must be on same local network
+- **No Internet Access**: CRM only accessible on LAN (not public internet)
+- **Firewall**: Host machine may block incoming connections (check settings)
+
+### Export
+
+- **File Download Only**: Export produces JSON file (no cloud storage)
+- **Manual Process**: No scheduled/automatic exports
+- **AOS Proof**: Proof ID generated but not verified against blockchain (demo mode)
+
+### Features Not Included
+
+- **No Email Integration**: Can't send emails to customers
+- **No Calendar Integration**: Jobs don't sync to calendar apps
+- **No File Attachments**: Can't attach files to jobs/notes
+- **No Search**: No search/filter functionality
+- **No Reports**: No analytics or reporting features
+- **No Edit/Delete**: Can't edit or delete existing jobs/notes (only add)
+
+### Browser Compatibility
+
+- **Modern Browsers Only**: Tested on Chrome, Firefox, Safari (latest versions)
+- **No IE Support**: Internet Explorer not supported
+
+---
+
 ## Summary
 
 **Terminal:**
